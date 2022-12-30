@@ -1,6 +1,7 @@
 import {PizzaApi} from "../../../types";
 import {createSlice} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
+import {createPizza} from "./pizzaThunks";
 
 interface PizzaState {
   items: PizzaApi[];
@@ -22,6 +23,17 @@ export const pizzaSlice = createSlice({
   name: 'pizza',
   initialState,
   reducers: {},
+  extraReducers: builder => {
+    builder.addCase(createPizza.pending, state => {
+      state.createLoading = true;
+    });
+    builder.addCase(createPizza.fulfilled, state => {
+      state.createLoading = false;
+    });
+    builder.addCase(createPizza.rejected, state => {
+      state.createLoading = false;
+    });
+  }
 });
 
 
