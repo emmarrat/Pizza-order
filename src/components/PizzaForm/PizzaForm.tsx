@@ -30,7 +30,7 @@ const PizzaForm: React.FC<Props> = ({onSubmit, loading, editingPizza}) => {
 
   return (
     <form onSubmit={onFormSubmit}>
-      <h4>{'Add new dish'}</h4>
+      <h4>{editingPizza ? 'Edit selected pizza' : 'Add new dish'}</h4>
       <div className="form-group  mb-3">
         <label htmlFor="name">Name</label>
         <input
@@ -38,6 +38,7 @@ const PizzaForm: React.FC<Props> = ({onSubmit, loading, editingPizza}) => {
           className="form-control"
           value={pizza.name}
           onChange={onFormChange}
+          required
         />
       </div>
       <div className="form-group mb-3">
@@ -47,6 +48,7 @@ const PizzaForm: React.FC<Props> = ({onSubmit, loading, editingPizza}) => {
           className="form-control"
           value={pizza.pic}
           onChange={onFormChange}
+          required
         />
       </div>
       <div className="form-group mb-2">
@@ -56,11 +58,12 @@ const PizzaForm: React.FC<Props> = ({onSubmit, loading, editingPizza}) => {
           className="form-control"
           value={pizza.price}
           onChange={onFormChange}
+          required
         />
       </div>
       <button type="submit" disabled={loading} className="btn btn-success bg-gradient">
         {loading && <ButtonSpinner/>}
-        Add new pizza
+        {editingPizza ? 'Update' : ' Add new pizza'}
       </button>
     </form>
   );
