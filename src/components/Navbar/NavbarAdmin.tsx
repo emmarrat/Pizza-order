@@ -6,7 +6,7 @@ const NavbarAdmin = () => {
     <div className="navbar navbar-expand-sm navbar-dark bg-success bg-gradient mb-5">
       <div className="container d-flex justify-content-between">
         <div>
-          <Link to="/admin/" className="navbar-brand">Turtle Pizza Admin</Link>
+          <Link to="/admin/dishes" className="navbar-brand">Turtle Pizza Admin</Link>
         </div>
         <div >
           <ul className="navbar-nav mr-auto">

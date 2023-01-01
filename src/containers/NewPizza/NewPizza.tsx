@@ -14,7 +14,7 @@ const NewPizza = () => {
 
   const onSubmit = async (pizza: Pizza) => {
     await dispatch(createPizza(pizza));
-    navigate('/admin/');
+    navigate('/admin/dishes');
   }
 
   return (

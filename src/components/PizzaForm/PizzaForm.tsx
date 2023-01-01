@@ -5,10 +5,11 @@ import ButtonSpinner from "../Spinner/ButtonSpinner";
 interface Props {
   onSubmit: (pizza: Pizza) => void;
   loading: boolean;
+  editingPizza?: PizzaMutation;
 }
 
-const PizzaForm: React.FC<Props> = ({onSubmit, loading}) => {
-  const [pizza, setPizza] = useState<PizzaMutation>({
+const PizzaForm: React.FC<Props> = ({onSubmit, loading, editingPizza}) => {
+  const [pizza, setPizza] = useState<PizzaMutation>(editingPizza ? editingPizza : {
     name: '',
     pic: '',
     price: '',
