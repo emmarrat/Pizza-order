@@ -1,5 +1,5 @@
-import {Pizza, PizzaApi} from "../../../types";
-import {createSlice} from "@reduxjs/toolkit";
+import {CartPizza, Pizza, PizzaApi} from "../../../types";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {createPizza, fetchOnePizza, fetchPizza, removePizza, updatePizza} from "./pizzaThunks";
 
@@ -10,6 +10,7 @@ interface PizzaState {
   removeLoading: false | string;
   createLoading: boolean;
   updateLoading: boolean;
+  cart: CartPizza[];
 }
 
 const initialState: PizzaState = {
@@ -19,12 +20,29 @@ const initialState: PizzaState = {
   removeLoading: false,
   createLoading: false,
   updateLoading: false,
+  cart: [],
 }
+
+// export interface PizzaCart {
+//   [id: string]: PizzaApi;
+// }
 
 export const pizzaSlice = createSlice({
   name: 'pizza',
   initialState,
-  reducers: {},
+  reducers: {
+    addPizza: (state, {payload: pizza}: PayloadAction<PizzaApi>) => {
+      const existingIndex = state.cart.findIndex(item => {
+        return item.pizza.id === pizza.id;
+      });
+
+      if (existingIndex !== -1) {
+        state.cart[existingIndex].amount++;
+      } else {
+        state.cart.push({pizza, amount: 1});
+      }
+    }
+  },
   extraReducers: builder => {
     builder.addCase(createPizza.pending, state => {
       state.createLoading = true;
@@ -80,9 +98,14 @@ export const pizzaSlice = createSlice({
 
 export const pizzaReducer = pizzaSlice.reducer;
 
+export const {addPizza} = pizzaSlice.actions;
+
+
 export const selectPizza = (state: RootState) => state.pizza.items;
 export const selectOnePizza = (state: RootState) => state.pizza.item;
 export const selectPizzaFetchLoading = (state: RootState) => state.pizza.fetchLoading;
 export const selectPizzaRemoveLoading = (state: RootState) => state.pizza.removeLoading;
 export const selectPizzaCreateLoading = (state: RootState) => state.pizza.createLoading;
 export const selectPizzaUpdateLoading = (state: RootState) => state.pizza.updateLoading;
+
+export const selectCartPizza = (state: RootState) => state.pizza.cart;

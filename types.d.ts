@@ -14,3 +14,8 @@ export interface PizzaListApi {
 export interface PizzaMutation extends Pizza{
   price: string;
 }
+
+export interface CartPizza {
+  pizza: PizzaApi;
+  amount: number;
+}
