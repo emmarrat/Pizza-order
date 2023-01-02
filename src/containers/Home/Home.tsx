@@ -1,6 +1,10 @@
 import React, {useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
-import {selectCartPizza, selectPizza, selectPizzaFetchLoading} from "../../features/pizza/pizzaSlice";
+import {
+  selectPizza,
+  selectPizzaFetchLoading, selectTotalPrice,
+  totalPrice
+} from "../../features/pizza/pizzaSlice";
 import {fetchPizza} from "../../features/pizza/pizzaThunks";
 import Spinner from "../../components/Spinner/Spinner";
 import ItemCard from "../../components/ItemCard/ItemCard";
@@ -12,16 +16,15 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const pizzaState = useAppSelector(selectPizza);
   const fetchLoading = useAppSelector(selectPizzaFetchLoading);
-  const cartState = useAppSelector(selectCartPizza);
+  const total = useAppSelector(selectTotalPrice);
 
   useEffect(() => {
     dispatch(fetchPizza());
   }, [dispatch]);
 
-  const totalPrice = cartState.reduce((acc, pizza) => {
-     return acc + (pizza.pizza.price * pizza.amount);
-  }, 0);
-
+  const countTotal = () => {
+    dispatch(totalPrice());
+  };
 
 
   return (
@@ -29,15 +32,17 @@ const Home = () => {
       <Navbar/>
       <div className="container d-flex flex-column align-items-center">
         {fetchLoading ? <Spinner/> : pizzaState.map(pizza => (
-          <ItemCard key={pizza.id} pizza={pizza}/>
+          <ItemCard key={pizza.id} countTotal={countTotal} pizza={pizza}/>
         ))}
-
       </div>
-      <div className="container d-flex flex-row-reverse align-items-center">
+      <div className={fetchLoading ? "d-none" : "container d-flex flex-row-reverse align-items-center"}>
         <div className="ms-5">
           <Link to="/checkout" className="btn  btn-outline-success">Checkout</Link>
         </div>
-        <p className="m-0 text-uppercase fw-bold">Order total: {totalPrice === 0 ? '0' : totalPrice + DELIVERY_PRICE} </p>
+        <div>
+          <p className="m-0 text-uppercase fw-bold">Order total: {total === 150 ? '0' : total}  KGS</p>
+          <p className="fs-6 fw-lighter m-0">Delivery price is fixed: {DELIVERY_PRICE} KGS</p>
+        </div>
       </div>
     </>
 

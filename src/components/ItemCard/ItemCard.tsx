@@ -5,12 +5,14 @@ import {useAppDispatch} from "../../app/hooks";
 
 interface Props {
   pizza: PizzaApi
+  countTotal: () => void;
 }
 
-const ItemCard: React.FC<Props> = ({pizza}) => {
+const ItemCard: React.FC<Props> = ({pizza, countTotal}) => {
   const dispatch = useAppDispatch();
   const addToCart = () => {
     dispatch(addPizza(pizza));
+    countTotal();
   };
 
   return (

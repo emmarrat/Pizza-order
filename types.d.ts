@@ -19,3 +19,7 @@ export interface CartPizza {
   pizza: PizzaApi;
   amount: number;
 }
+
+export interface Order {
+  [id: string]: number;
+}

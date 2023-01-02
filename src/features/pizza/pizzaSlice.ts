@@ -2,6 +2,7 @@ import {CartPizza, Pizza, PizzaApi} from "../../../types";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {createPizza, fetchOnePizza, fetchPizza, removePizza, updatePizza} from "./pizzaThunks";
+import {DELIVERY_PRICE} from "../../constants";
 
 interface PizzaState {
   items: PizzaApi[];
@@ -11,6 +12,7 @@ interface PizzaState {
   createLoading: boolean;
   updateLoading: boolean;
   cart: CartPizza[];
+  totalPrice: number;
 }
 
 const initialState: PizzaState = {
@@ -21,11 +23,8 @@ const initialState: PizzaState = {
   createLoading: false,
   updateLoading: false,
   cart: [],
+  totalPrice: 0,
 }
-
-// export interface PizzaCart {
-//   [id: string]: PizzaApi;
-// }
 
 export const pizzaSlice = createSlice({
   name: 'pizza',
@@ -35,12 +34,26 @@ export const pizzaSlice = createSlice({
       const existingIndex = state.cart.findIndex(item => {
         return item.pizza.id === pizza.id;
       });
-
       if (existingIndex !== -1) {
         state.cart[existingIndex].amount++;
       } else {
         state.cart.push({pizza, amount: 1});
       }
+    },
+    totalPrice: (state) => {
+      const totalPrice = state.cart.reduce((acc, pizza) => {
+        return acc + (pizza.pizza.price * pizza.amount);
+      }, 0);
+      state.totalPrice = totalPrice + DELIVERY_PRICE;
+    },
+    removeFromCart: (state, {payload: order}: PayloadAction<CartPizza>) => {
+      const removingIndex = state.cart.findIndex(item => {
+        return item.pizza.id === order.pizza.id;
+      });
+      state.cart.splice(removingIndex, 1);
+    },
+    cleanCard: (state) => {
+      state.cart = [];
     }
   },
   extraReducers: builder => {
@@ -92,13 +105,16 @@ export const pizzaSlice = createSlice({
     builder.addCase(removePizza.rejected, state => {
       state.removeLoading = false;
     });
+    // builder.addCase(createOrder.pending, state => {
+    //
+    // })
   }
 });
 
 
 export const pizzaReducer = pizzaSlice.reducer;
 
-export const {addPizza} = pizzaSlice.actions;
+export const {addPizza, totalPrice, removeFromCart, cleanCard} = pizzaSlice.actions;
 
 
 export const selectPizza = (state: RootState) => state.pizza.items;
@@ -109,3 +125,4 @@ export const selectPizzaCreateLoading = (state: RootState) => state.pizza.create
 export const selectPizzaUpdateLoading = (state: RootState) => state.pizza.updateLoading;
 
 export const selectCartPizza = (state: RootState) => state.pizza.cart;
+export const selectTotalPrice = (state: RootState) => state.pizza.totalPrice;
