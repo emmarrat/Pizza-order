@@ -1,0 +1,6 @@
+.item-card {
+    cursor: pointer;
+}
+.item-card:active {
+    box-shadow: 0 0 10px 10px #E2E2E2;
+}

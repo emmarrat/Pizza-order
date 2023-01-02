@@ -2,6 +2,7 @@ import React from 'react';
 import {PizzaApi} from "../../../types";
 import {addPizza} from "../../features/pizza/pizzaSlice";
 import {useAppDispatch} from "../../app/hooks";
+import './ItemCard.css';
 
 interface Props {
   pizza: PizzaApi
@@ -17,7 +18,7 @@ const ItemCard: React.FC<Props> = ({pizza, countTotal}) => {
 
   return (
     <>
-      <div className="card mb-3" onClick={addToCart}>
+      <div className="card mb-3 item-card" onClick={addToCart}>
         <div className="row g-0" style={{width: '700px'}}>
           <div className="col-md-3">
             <img src={pizza.pic} className="img-fluid rounded-start" alt={pizza.name + '-pic'}/>

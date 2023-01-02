@@ -13,13 +13,18 @@ const Checkout = () => {
   const cartState = useAppSelector(selectCartPizza);
   const total = useAppSelector(selectTotalPrice);
 
-  const makeOrder =  async () => {
-  const someOrder = Object.fromEntries(cartState.map(n => [ n.pizza.id, n.amount ]));
-  await dispatch(createOrder(someOrder));
-  await dispatch(cleanCard());
-  await dispatch(totalPrice());
-  navigate('/');
+  const makeOrder = async () => {
+    const someOrder = Object.fromEntries(cartState.map(n => [n.pizza.id, n.amount]));
+    await dispatch(createOrder(someOrder));
+    await dispatch(cleanCard());
+    await dispatch(totalPrice());
+    navigate('/');
   };
+
+  let btnActive = false;
+  if (cartState.length === 0) {
+    btnActive = true;
+  }
 
   return (
     <>
@@ -28,7 +33,7 @@ const Checkout = () => {
         <div>
           <h2 className="text-center text-uppercase mb-5">Your order:</h2>
         </div>
-        {cartState.map(order => (
+        {cartState.length === 0 ? <h3 className="text-uppercase fw-bold">Your cart is empty</h3> : cartState.map(order => (
           <OrderCard key={order.pizza.id} order={order}/>
         ))}
 
@@ -42,7 +47,8 @@ const Checkout = () => {
         </div>
         <div className="d-flex justify-content-evenly w-50 px-2">
           <Link to="/" className="btn btn-lg btn-outline-danger px-5">Cancel</Link>
-          <button className="btn btn-lg btn-outline-success px-5" onClick={makeOrder}>Order</button>
+          <button disabled={btnActive} className="btn btn-lg btn-outline-success px-5" onClick={makeOrder}>Order
+          </button>
         </div>
       </div>
     </>

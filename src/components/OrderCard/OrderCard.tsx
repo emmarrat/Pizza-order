@@ -3,6 +3,7 @@ import {CartPizza} from "../../../types";
 import {useAppDispatch} from "../../app/hooks";
 import {removeFromCart, totalPrice} from "../../features/pizza/pizzaSlice";
 
+
 interface Props {
   order: CartPizza
 }
