@@ -16,7 +16,7 @@ const NavbarAdmin = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink to="/admin/new-dish" className="nav-link">
+              <NavLink to="/admin/orders" className="nav-link">
                 Orders
               </NavLink>
             </li>

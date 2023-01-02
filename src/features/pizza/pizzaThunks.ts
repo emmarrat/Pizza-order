@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {Order, Pizza, PizzaApi, PizzaListApi} from "../../../types";
+import {Order, Orders, OrdersApi, Pizza, PizzaApi, PizzaListApi} from "../../../types";
 import axiosApi from "../../axiosApi";
 
 export const createPizza = createAsyncThunk<void, Pizza>(
@@ -12,20 +12,20 @@ export const createPizza = createAsyncThunk<void, Pizza>(
 export const fetchPizza = createAsyncThunk<PizzaApi[]>(
   'pizza/fetchAll',
   async () => {
-     const pizzaResponse= await axiosApi.get<PizzaListApi | null>('/pizza.json');
-     const pizzaList = pizzaResponse.data;
+    const pizzaResponse = await axiosApi.get<PizzaListApi | null>('/pizza.json');
+    const pizzaList = pizzaResponse.data;
 
-     let newPizzaList: PizzaApi[] = [];
-     if (pizzaList) {
-       newPizzaList = Object.keys(pizzaList).map(id => {
-         const pizza = pizzaList[id];
-         return {
-           ...pizza,
-           id
-         }
-       });
-     }
-     return newPizzaList;
+    let newPizzaList: PizzaApi[] = [];
+    if (pizzaList) {
+      newPizzaList = Object.keys(pizzaList).map(id => {
+        const pizza = pizzaList[id];
+        return {
+          ...pizza,
+          id
+        }
+      });
+    }
+    return newPizzaList;
   }
 );
 
@@ -64,5 +64,27 @@ export const createOrder = createAsyncThunk<void, Order>(
   'pizza/order',
   async (order) => {
     await axiosApi.post('/pizza-orders.json', order);
+  }
+);
+
+
+export const fetchOrders = createAsyncThunk<Orders[]>(
+  'pizza/fetchOrders',
+  async () => {
+    const ordersResponse = await axiosApi.get<OrdersApi | null>('/pizza-orders.json');
+    const ordersList = ordersResponse.data;
+
+    let newOrders: Orders[] = [];
+
+    if (ordersList) {
+      newOrders =  Object.keys(ordersList).map(id => {
+        const order = ordersList[id];
+        return {
+          order: order,
+          id
+        }
+      });
+    }
+    return newOrders;
   }
 );

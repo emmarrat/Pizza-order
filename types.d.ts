@@ -3,7 +3,8 @@ export interface Pizza {
   pic: string;
   price: number;
 }
-export interface PizzaApi extends Pizza{
+
+export interface PizzaApi extends Pizza {
   id: string;
 }
 
@@ -11,7 +12,7 @@ export interface PizzaListApi {
   [id: string]: Pizza;
 }
 
-export interface PizzaMutation extends Pizza{
+export interface PizzaMutation extends Pizza {
   price: string;
 }
 
@@ -22,4 +23,18 @@ export interface CartPizza {
 
 export interface Order {
   [id: string]: number;
+}
+
+export interface OrdersApi {
+  [id: string]: Order;
+}
+
+export interface Orders {
+  order: Order;
+  id: string;
+}
+
+export interface OrdersList {
+  order: CartPizza[];
+  id: string;
 }

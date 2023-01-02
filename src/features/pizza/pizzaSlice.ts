@@ -1,7 +1,7 @@
-import {CartPizza, Pizza, PizzaApi} from "../../../types";
+import {CartPizza, Orders, Pizza, PizzaApi} from "../../../types";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {createPizza, fetchOnePizza, fetchPizza, removePizza, updatePizza} from "./pizzaThunks";
+import {createPizza, fetchOnePizza, fetchOrders, fetchPizza, removePizza, updatePizza} from "./pizzaThunks";
 import {DELIVERY_PRICE} from "../../constants";
 
 interface PizzaState {
@@ -13,6 +13,7 @@ interface PizzaState {
   updateLoading: boolean;
   cart: CartPizza[];
   totalPrice: number;
+  orders: Orders[];
 }
 
 const initialState: PizzaState = {
@@ -24,6 +25,7 @@ const initialState: PizzaState = {
   updateLoading: false,
   cart: [],
   totalPrice: 0,
+  orders: [],
 }
 
 export const pizzaSlice = createSlice({
@@ -105,9 +107,17 @@ export const pizzaSlice = createSlice({
     builder.addCase(removePizza.rejected, state => {
       state.removeLoading = false;
     });
-    // builder.addCase(createOrder.pending, state => {
-    //
-    // })
+    builder.addCase(fetchOrders.pending, state => {
+      state.fetchLoading = true;
+    });
+    builder.addCase(fetchOrders.fulfilled, (state, {payload: order}) => {
+      state.fetchLoading = false;
+      state.orders = order;
+    });
+    builder.addCase(fetchOrders.rejected, state => {
+      state.fetchLoading = false;
+    });
+
   }
 });
 
@@ -126,3 +136,4 @@ export const selectPizzaUpdateLoading = (state: RootState) => state.pizza.update
 
 export const selectCartPizza = (state: RootState) => state.pizza.cart;
 export const selectTotalPrice = (state: RootState) => state.pizza.totalPrice;
+export const selectOrders = (state: RootState) => state.pizza.orders;

@@ -6,6 +6,7 @@ import AdminDishes from "./containers/AdminDishes/AdminDishes";
 import EditPizza from "./containers/EditPizza/EditPizza";
 import Home from "./containers/Home/Home";
 import Checkout from "./containers/Checkout/Checkout";
+import Orders from "./containers/Orders/Orders";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/admin/add-new-dish" element={<NewPizza/>}/>
           <Route path="/admin/dishes" element={<AdminDishes/>}/>
           <Route path="/admin/edit-dish/:id" element={<EditPizza/>}/>
+          <Route path="/admin/orders" element={<Orders/>}/>
           <Route path="/" element={<Home/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
         </Routes>
