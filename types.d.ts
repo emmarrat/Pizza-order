@@ -16,11 +16,6 @@ export interface PizzaMutation extends Pizza {
   price: string;
 }
 
-export interface CartPizza {
-  pizza: PizzaApi;
-  amount: number;
-}
-
 export interface Order {
   [id: string]: number;
 }
@@ -34,7 +29,28 @@ export interface Orders {
   id: string;
 }
 
+export interface CartPizza {
+  pizza: PizzaApi;
+  amount: number;
+}
+
 export interface OrdersList {
   order: CartPizza[];
   id: string;
+}
+
+export interface OrderAdmin {
+  [id: string]: {
+    name: string;
+    amount: number;
+    price: number;
+    total: number;
+  }
+}
+
+export interface OrderArray {
+  name: string;
+  amount: number;
+  price: number;
+  total: number;
 }

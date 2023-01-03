@@ -1,36 +1,26 @@
 import React, {useEffect} from 'react';
-import {useAppDispatch} from "../../app/hooks";
-import {fetchOrders, fetchPizza} from "../../features/pizza/pizzaThunks";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {fetchOrders} from "../../features/pizza/pizzaThunks";
+import {selectOrders} from "../../features/pizza/pizzaSlice";
 
 const Orders = () => {
   const dispatch = useAppDispatch();
-
-
+  const ordersState = useAppSelector(selectOrders);
 
   useEffect(() => {
-    dispatch(fetchPizza());
     dispatch(fetchOrders());
-  }, [dispatch]);
-
-  // const makeOrder = () => {
-  //   const newOrder = ordersState.map((order) => {
-  //     const keys = Object.keys(order.order);
-  //     return dishesState.find( dish => {
-  //       return keys.forEach(key => {
-  //         if (key === dish.id) {
-  //           return  console.log(`${dish.name} x ${order.order[key]}`)
-  //         }
-  //       })
-  //     });
-  //
-  //   });
-  //   return newOrder;
-  // }
-
+  }, [dispatch])
 
   return (
-    <div>
-      Orders
+    <div className="container">
+      orders
+      {ordersState.map(order => (
+        <div key={Math.random()} className="card mb-2 p-2">
+          {order.map(o => (
+            <div key={Math.random()}> {o.name} x {o.amount} Total: {o.total} KGS</div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

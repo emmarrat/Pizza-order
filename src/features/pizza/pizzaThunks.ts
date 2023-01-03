@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {Order, Orders, OrdersApi, Pizza, PizzaApi, PizzaListApi} from "../../../types";
+import {Order, OrderArray, Orders, OrdersApi, Pizza, PizzaApi, PizzaListApi} from "../../../types";
 import axiosApi from "../../axiosApi";
 
 export const createPizza = createAsyncThunk<void, Pizza>(
@@ -68,16 +68,19 @@ export const createOrder = createAsyncThunk<void, Order>(
 );
 
 
-export const fetchOrders = createAsyncThunk<Orders[]>(
+export const fetchOrders = createAsyncThunk<OrderArray[][]>(
   'pizza/fetchOrders',
   async () => {
     const ordersResponse = await axiosApi.get<OrdersApi | null>('/pizza-orders.json');
     const ordersList = ordersResponse.data;
-
+    const pizzaResponse = await axiosApi.get<PizzaListApi | null>('/pizza.json');
+    const pizzaList = pizzaResponse.data;
     let newOrders: Orders[] = [];
+    let newPizzaList: PizzaApi[] = [];
+    const mergedOrder: OrderArray[][] = [];
 
     if (ordersList) {
-      newOrders =  Object.keys(ordersList).map(id => {
+      newOrders = Object.keys(ordersList).map(id => {
         const order = ordersList[id];
         return {
           order: order,
@@ -85,6 +88,34 @@ export const fetchOrders = createAsyncThunk<Orders[]>(
         }
       });
     }
-    return newOrders;
+
+    if (pizzaList) {
+      newPizzaList = Object.keys(pizzaList).map(id => {
+        const pizza = pizzaList[id];
+        return {
+          ...pizza,
+          id
+        }
+      });
+    }
+
+    for (const order of newOrders) {
+      const arr = [];
+      for (const [dishId, amount] of Object.entries(order.order)) {
+        const dish = newPizzaList.find(dish => dish.id === dishId);
+
+        if (dish) {
+          const someObject = {
+            name: dish.name,
+            amount,
+            price: dish.price,
+            total: dish.price * amount
+          };
+          arr.push(someObject)
+        }
+      }
+      mergedOrder.push(arr);
+    }
+    return mergedOrder;
   }
 );

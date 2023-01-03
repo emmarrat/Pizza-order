@@ -1,4 +1,4 @@
-import {CartPizza, Orders, Pizza, PizzaApi} from "../../../types";
+import {CartPizza, OrderArray, Pizza, PizzaApi} from "../../../types";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
 import {createPizza, fetchOnePizza, fetchOrders, fetchPizza, removePizza, updatePizza} from "./pizzaThunks";
@@ -13,7 +13,8 @@ interface PizzaState {
   updateLoading: boolean;
   cart: CartPizza[];
   totalPrice: number;
-  orders: Orders[];
+  mergedOrders: OrderArray[][];
+  mergedTotal: number[];
 }
 
 const initialState: PizzaState = {
@@ -25,7 +26,8 @@ const initialState: PizzaState = {
   updateLoading: false,
   cart: [],
   totalPrice: 0,
-  orders: [],
+  mergedOrders: [],
+  mergedTotal: [],
 }
 
 export const pizzaSlice = createSlice({
@@ -56,6 +58,13 @@ export const pizzaSlice = createSlice({
     },
     cleanCard: (state) => {
       state.cart = [];
+    },
+    countMergedTotal: (state) => {
+      state.mergedTotal = state.mergedOrders.map(order => {
+        return order.reduce((acc, orr) => {
+          return acc + orr.total;
+        }, 0);
+      });
     }
   },
   extraReducers: builder => {
@@ -112,7 +121,7 @@ export const pizzaSlice = createSlice({
     });
     builder.addCase(fetchOrders.fulfilled, (state, {payload: order}) => {
       state.fetchLoading = false;
-      state.orders = order;
+      state.mergedOrders = order;
     });
     builder.addCase(fetchOrders.rejected, state => {
       state.fetchLoading = false;
@@ -124,7 +133,7 @@ export const pizzaSlice = createSlice({
 
 export const pizzaReducer = pizzaSlice.reducer;
 
-export const {addPizza, totalPrice, removeFromCart, cleanCard} = pizzaSlice.actions;
+export const {addPizza, totalPrice, removeFromCart, cleanCard,  countMergedTotal} = pizzaSlice.actions;
 
 
 export const selectPizza = (state: RootState) => state.pizza.items;
@@ -136,4 +145,5 @@ export const selectPizzaUpdateLoading = (state: RootState) => state.pizza.update
 
 export const selectCartPizza = (state: RootState) => state.pizza.cart;
 export const selectTotalPrice = (state: RootState) => state.pizza.totalPrice;
-export const selectOrders = (state: RootState) => state.pizza.orders;
+export const selectOrders = (state: RootState) => state.pizza.mergedOrders;
+export const selectMergedTotal = (state: RootState) => state.pizza.mergedTotal;
