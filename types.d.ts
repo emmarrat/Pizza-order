@@ -34,23 +34,15 @@ export interface CartPizza {
   amount: number;
 }
 
-export interface OrdersList {
-  order: CartPizza[];
-  id: string;
-}
-
-export interface OrderAdmin {
-  [id: string]: {
-    name: string;
-    amount: number;
-    price: number;
-    total: number;
-  }
-}
-
-export interface OrderArray {
+export interface FormattedOrder {
   name: string;
   amount: number;
   price: number;
   total: number;
+}
+
+export interface MergedOrder {
+  id: string,
+  total: number,
+  order: formattedOrder[],
 }

@@ -1,7 +1,15 @@
-import {CartPizza, OrderArray, Pizza, PizzaApi} from "../../../types";
+import {CartPizza, MergedOrder, Pizza, PizzaApi} from "../../../types";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {RootState} from "../../app/store";
-import {createPizza, fetchOnePizza, fetchOrders, fetchPizza, removePizza, updatePizza} from "./pizzaThunks";
+import {
+  createPizza,
+  fetchOnePizza,
+  fetchOrders,
+  fetchPizza,
+  removeOrder,
+  removePizza,
+  updatePizza
+} from "./pizzaThunks";
 import {DELIVERY_PRICE} from "../../constants";
 
 interface PizzaState {
@@ -13,8 +21,9 @@ interface PizzaState {
   updateLoading: boolean;
   cart: CartPizza[];
   totalPrice: number;
-  mergedOrders: OrderArray[][];
+  mergedOrders: MergedOrder[];
   mergedTotal: number[];
+  removeOrderLoading: boolean;
 }
 
 const initialState: PizzaState = {
@@ -28,6 +37,7 @@ const initialState: PizzaState = {
   totalPrice: 0,
   mergedOrders: [],
   mergedTotal: [],
+  removeOrderLoading: false,
 }
 
 export const pizzaSlice = createSlice({
@@ -59,13 +69,6 @@ export const pizzaSlice = createSlice({
     cleanCard: (state) => {
       state.cart = [];
     },
-    countMergedTotal: (state) => {
-      state.mergedTotal = state.mergedOrders.map(order => {
-        return order.reduce((acc, orr) => {
-          return acc + orr.total;
-        }, 0);
-      });
-    }
   },
   extraReducers: builder => {
     builder.addCase(createPizza.pending, state => {
@@ -126,6 +129,16 @@ export const pizzaSlice = createSlice({
     builder.addCase(fetchOrders.rejected, state => {
       state.fetchLoading = false;
     });
+    builder.addCase(removeOrder.pending, (state) => {
+      state.removeOrderLoading = true;
+    });
+    builder.addCase(removeOrder.fulfilled, (state) => {
+      state.removeOrderLoading = false;
+    });
+    builder.addCase(removeOrder.rejected, (state) => {
+      state.removeOrderLoading = false;
+    });
+
 
   }
 });
@@ -133,7 +146,7 @@ export const pizzaSlice = createSlice({
 
 export const pizzaReducer = pizzaSlice.reducer;
 
-export const {addPizza, totalPrice, removeFromCart, cleanCard,  countMergedTotal} = pizzaSlice.actions;
+export const {addPizza, totalPrice, removeFromCart, cleanCard} = pizzaSlice.actions;
 
 
 export const selectPizza = (state: RootState) => state.pizza.items;

@@ -1,6 +1,16 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {Order, OrderArray, Orders, OrdersApi, Pizza, PizzaApi, PizzaListApi} from "../../../types";
+import {
+  FormattedOrder,
+  MergedOrder,
+  Order,
+  Orders,
+  OrdersApi,
+  Pizza,
+  PizzaApi,
+  PizzaListApi
+} from "../../../types";
 import axiosApi from "../../axiosApi";
+import {DELIVERY_PRICE} from "../../constants";
 
 export const createPizza = createAsyncThunk<void, Pizza>(
   'pizza/create',
@@ -68,7 +78,7 @@ export const createOrder = createAsyncThunk<void, Order>(
 );
 
 
-export const fetchOrders = createAsyncThunk<OrderArray[][]>(
+export const fetchOrders = createAsyncThunk<MergedOrder[]>(
   'pizza/fetchOrders',
   async () => {
     const ordersResponse = await axiosApi.get<OrdersApi | null>('/pizza-orders.json');
@@ -77,7 +87,6 @@ export const fetchOrders = createAsyncThunk<OrderArray[][]>(
     const pizzaList = pizzaResponse.data;
     let newOrders: Orders[] = [];
     let newPizzaList: PizzaApi[] = [];
-    const mergedOrder: OrderArray[][] = [];
 
     if (ordersList) {
       newOrders = Object.keys(ordersList).map(id => {
@@ -99,23 +108,42 @@ export const fetchOrders = createAsyncThunk<OrderArray[][]>(
       });
     }
 
+    const mergedOrder: MergedOrder[] = [];
+    let total: number = 0;
+
     for (const order of newOrders) {
-      const arr = [];
+      const ordersArray: FormattedOrder[] = [];
       for (const [dishId, amount] of Object.entries(order.order)) {
         const dish = newPizzaList.find(dish => dish.id === dishId);
 
         if (dish) {
-          const someObject = {
+          const orderItem = {
             name: dish.name,
             amount,
             price: dish.price,
             total: dish.price * amount
+
           };
-          arr.push(someObject)
+          ordersArray.push(orderItem)
         }
       }
-      mergedOrder.push(arr);
+      total = ordersArray.reduce((acc, order) => {
+        return acc + order.total;
+      }, 0)
+      const orderObj = {
+        order: ordersArray,
+        id: order.id,
+        total: total + DELIVERY_PRICE,
+      }
+      mergedOrder.push(orderObj);
     }
     return mergedOrder;
+  }
+);
+
+export const removeOrder = createAsyncThunk<void, string>(
+  'pizza/removeOrder',
+  async (orderId) => {
+    await axiosApi.delete('/pizza-orders/' + orderId + '.json');
   }
 );
