@@ -22,8 +22,6 @@ const Checkout = () => {
     navigate('/');
   };
 
-
-
   return (
     <>
       <Navbar/>
@@ -31,10 +29,10 @@ const Checkout = () => {
         <div>
           <h2 className="text-center text-uppercase mb-5">Your order:</h2>
         </div>
-        {cartState.length === 0 ? <h3 className="text-uppercase fw-bold">Your cart is empty</h3> : cartState.map(order => (
-          <OrderCard key={order.pizza.id} order={order}/>
-        ))}
-
+        {cartState.length === 0 ?
+          <h3 className="text-uppercase fw-bold">Cart is empty</h3> : cartState.map(order => (
+            <OrderCard key={order.pizza.id} order={order}/>
+          ))}
         <div className="d-flex justify-content-between w-50 px-2 mt-5">
           <p>Delivery fixed price:</p>
           <p className="fw-bold">{DELIVERY_PRICE} KGS</p>
@@ -46,7 +44,6 @@ const Checkout = () => {
         <div>
           <OrderForm onSubmit={makeOrder}/>
         </div>
-
       </div>
     </>
   );

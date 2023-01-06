@@ -123,7 +123,7 @@ export const fetchOrders = createAsyncThunk<MergedOrder[]>(
             price: dish.price,
             total: dish.price * amount
           };
-          ordersArray.push(orderItem)
+          ordersArray.push(orderItem);
         }
       }
       total = ordersArray.reduce((acc, order) => {

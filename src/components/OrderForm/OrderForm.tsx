@@ -28,7 +28,6 @@ const OrderForm: React.FC<Props> = ({onSubmit}) => {
       client,
       order,
     });
-    console.log(client);
   };
 
   let btnActive = false;
@@ -37,11 +36,12 @@ const OrderForm: React.FC<Props> = ({onSubmit}) => {
   }
   return (
     <>
-      <form onSubmit={onFormSubmit} className="mb-5">
+      <form onSubmit={onFormSubmit} className="my-5">
         <h4>Enter your contact info for delivery:</h4>
         <div className="form-group  mb-3">
           <label htmlFor="name">Name</label>
           <input
+            disabled={btnActive}
             id="name" name="name" type="text"
             className="form-control"
             value={client.name}
@@ -52,6 +52,7 @@ const OrderForm: React.FC<Props> = ({onSubmit}) => {
         <div className="form-group mb-3">
           <label htmlFor="image">Phone</label>
           <input
+            disabled={btnActive}
             id="phone" name="phone" type="number"
             className="form-control"
             value={client.phone}
@@ -62,6 +63,7 @@ const OrderForm: React.FC<Props> = ({onSubmit}) => {
         <div className="form-group mb-2">
           <label htmlFor="price">Address</label>
           <input
+            disabled={btnActive}
             id="address" name="address" type="text"
             className="form-control"
             value={client.address}
