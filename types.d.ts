@@ -20,12 +20,23 @@ export interface Order {
   [id: string]: number;
 }
 
-export interface OrdersApi {
-  [id: string]: Order;
+export interface Client {
+  name: string;
+  phone: string;
+  address: string;
 }
 
-export interface Orders {
+export interface OrderClient {
   order: Order;
+  client: Client;
+}
+
+export interface OrdersApi {
+  [id: string]: OrderClient;
+}
+
+export interface OrdersClient {
+  order: OrderClient;
   id: string;
 }
 
@@ -42,7 +53,10 @@ export interface FormattedOrder {
 }
 
 export interface MergedOrder {
-  id: string,
-  total: number,
-  order: formattedOrder[],
+  id: string;
+  total: number;
+  order: formattedOrder[];
+  client: Client;
 }
+
+

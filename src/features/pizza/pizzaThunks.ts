@@ -2,9 +2,9 @@ import {createAsyncThunk} from "@reduxjs/toolkit";
 import {
   FormattedOrder,
   MergedOrder,
-  Order,
-  Orders,
+  OrderClient,
   OrdersApi,
+  OrdersClient,
   Pizza,
   PizzaApi,
   PizzaListApi
@@ -70,7 +70,7 @@ export const removePizza = createAsyncThunk<void, string>(
   }
 );
 
-export const createOrder = createAsyncThunk<void, Order>(
+export const createOrder = createAsyncThunk<void, OrderClient>(
   'pizza/order',
   async (order) => {
     await axiosApi.post('/pizza-orders.json', order);
@@ -85,7 +85,7 @@ export const fetchOrders = createAsyncThunk<MergedOrder[]>(
     const ordersList = ordersResponse.data;
     const pizzaResponse = await axiosApi.get<PizzaListApi | null>('/pizza.json');
     const pizzaList = pizzaResponse.data;
-    let newOrders: Orders[] = [];
+    let newOrders: OrdersClient[] = [];
     let newPizzaList: PizzaApi[] = [];
 
     if (ordersList) {
@@ -113,7 +113,7 @@ export const fetchOrders = createAsyncThunk<MergedOrder[]>(
 
     for (const order of newOrders) {
       const ordersArray: FormattedOrder[] = [];
-      for (const [dishId, amount] of Object.entries(order.order)) {
+      for (const [dishId, amount] of Object.entries(order.order.order)) {
         const dish = newPizzaList.find(dish => dish.id === dishId);
 
         if (dish) {
@@ -122,7 +122,6 @@ export const fetchOrders = createAsyncThunk<MergedOrder[]>(
             amount,
             price: dish.price,
             total: dish.price * amount
-
           };
           ordersArray.push(orderItem)
         }
@@ -134,6 +133,7 @@ export const fetchOrders = createAsyncThunk<MergedOrder[]>(
         order: ordersArray,
         id: order.id,
         total: total + DELIVERY_PRICE,
+        client: order.order.client
       }
       mergedOrder.push(orderObj);
     }

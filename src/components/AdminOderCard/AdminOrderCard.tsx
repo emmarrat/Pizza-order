@@ -24,13 +24,20 @@ const AdminOrderCard: React.FC<Props> = ({order}) => {
 
   return (
     <>
-      <div key={order.id}  className="card mb-2 p-2 w-50">
+      <div className="card mb-2 p-3 w-50">
         {order.order.map(o => (
-          <div key={Math.random()} className="d-flex align-items-center justify-content-between">
-            <p className="mb-0"> {o.name} x {o.amount}</p>
-            <p className="mb-0"> {o.total} KGS</p>
-          </div>
+            <div key={Math.random()} className="d-flex align-items-center justify-content-between">
+              <p className="mb-0"> {o.name} x {o.amount}</p>
+              <p className="mb-0"> {o.total} KGS</p>
+            </div>
         ))}
+        <hr/>
+        <div>
+          <p className="mb-0 fw-bold">Client info:</p>
+          <p className="mb-0">Name: <b>{order.client.name}</b></p>
+          <p className="mb-0">Address: <b> {order.client.address}</b></p>
+          <p className="mb-0">Phone: <b>{order.client.phone}</b></p>
+        </div>
         <hr/>
         <p className="mb-0">Delivery price: <strong>{DELIVERY_PRICE} KGS</strong> </p>
         <p className="fw-bolder mb-0">Grand total for the order: {order.total} KGS</p>

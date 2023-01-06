@@ -4,8 +4,10 @@ import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import {cleanCard, selectCartPizza, selectTotalPrice, totalPrice} from "../../features/pizza/pizzaSlice";
 import OrderCard from "../../components/OrderCard/OrderCard";
 import {DELIVERY_PRICE} from "../../constants";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {createOrder} from "../../features/pizza/pizzaThunks";
+import OrderForm from "../../components/OrderForm/OrderForm";
+import {OrderClient} from "../../../types";
 
 const Checkout = () => {
   const dispatch = useAppDispatch();
@@ -13,18 +15,14 @@ const Checkout = () => {
   const cartState = useAppSelector(selectCartPizza);
   const total = useAppSelector(selectTotalPrice);
 
-  const makeOrder = async () => {
-    const someOrder = Object.fromEntries(cartState.map(n => [n.pizza.id, n.amount]));
-    await dispatch(createOrder(someOrder));
+  const makeOrder = async (order: OrderClient) => {
+    await dispatch(createOrder(order));
     await dispatch(cleanCard());
     await dispatch(totalPrice());
     navigate('/');
   };
 
-  let btnActive = false;
-  if (cartState.length === 0) {
-    btnActive = true;
-  }
+
 
   return (
     <>
@@ -45,11 +43,10 @@ const Checkout = () => {
           <p>Total:</p>
           <p className="text-decoration-underline">{total} KGS</p>
         </div>
-        <div className="d-flex justify-content-evenly w-50 px-2">
-          <Link to="/" className="btn btn-lg btn-outline-danger px-5">Cancel</Link>
-          <button disabled={btnActive} className="btn btn-lg btn-outline-success px-5" onClick={makeOrder}>Order
-          </button>
+        <div>
+          <OrderForm onSubmit={makeOrder}/>
         </div>
+
       </div>
     </>
   );
