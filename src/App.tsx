@@ -10,7 +10,7 @@ import Orders from "./containers/Orders/Orders";
 
 function App() {
   return (
-    <>
+    <div className="mb-5">
         <Routes>
           <Route path="/admin/" element={<Admin/>}/>
           <Route path="/admin/add-new-dish" element={<NewPizza/>}/>
@@ -20,7 +20,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
           <Route path="/checkout" element={<Checkout/>}/>
         </Routes>
-    </>
+    </div>
   );
 }
 

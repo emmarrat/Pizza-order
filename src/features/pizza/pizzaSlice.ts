@@ -22,8 +22,6 @@ interface PizzaState {
   cart: CartPizza[];
   totalPrice: number;
   mergedOrders: MergedOrder[];
-  mergedTotal: number[];
-  removeOrderLoading: boolean;
 }
 
 const initialState: PizzaState = {
@@ -36,8 +34,6 @@ const initialState: PizzaState = {
   cart: [],
   totalPrice: 0,
   mergedOrders: [],
-  mergedTotal: [],
-  removeOrderLoading: false,
 }
 
 export const pizzaSlice = createSlice({
@@ -129,17 +125,15 @@ export const pizzaSlice = createSlice({
     builder.addCase(fetchOrders.rejected, state => {
       state.fetchLoading = false;
     });
-    builder.addCase(removeOrder.pending, (state) => {
-      state.removeOrderLoading = true;
+    builder.addCase(removeOrder.pending, (state, {meta: {arg: orderId}}) => {
+      state.removeLoading = orderId;
     });
     builder.addCase(removeOrder.fulfilled, (state) => {
-      state.removeOrderLoading = false;
+      state.removeLoading = false;
     });
     builder.addCase(removeOrder.rejected, (state) => {
-      state.removeOrderLoading = false;
+      state.removeLoading = false;
     });
-
-
   }
 });
 
@@ -159,4 +153,3 @@ export const selectPizzaUpdateLoading = (state: RootState) => state.pizza.update
 export const selectCartPizza = (state: RootState) => state.pizza.cart;
 export const selectTotalPrice = (state: RootState) => state.pizza.totalPrice;
 export const selectOrders = (state: RootState) => state.pizza.mergedOrders;
-export const selectMergedTotal = (state: RootState) => state.pizza.mergedTotal;
