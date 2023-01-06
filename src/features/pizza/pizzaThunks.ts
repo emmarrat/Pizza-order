@@ -126,9 +126,11 @@ export const fetchOrders = createAsyncThunk<MergedOrder[]>(
           ordersArray.push(orderItem);
         }
       }
+
       total = ordersArray.reduce((acc, order) => {
         return acc + order.total;
-      }, 0)
+      }, 0);
+
       const orderObj = {
         order: ordersArray,
         id: order.id,
